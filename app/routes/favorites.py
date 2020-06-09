@@ -10,10 +10,9 @@ def get_favorites(userid):
     favorites = Favorite.query.options(db.joinedload(
         "favdeck")).filter_by(user_id=userid).all()
 
-    data = [{
-        "deck_id": favorite.deck_id,
-        "title": favorite.favdeck.title
-    } for favorite in favorites]
+    data = [
+        favorite.deck_id
+        for favorite in favorites]
     return {"data": data}
 
 
