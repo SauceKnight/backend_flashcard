@@ -1,0 +1,21 @@
+user:
+    id: user.id
+    token: token
+    username: user.username
+    favdeck: [
+        deck.id,
+        deck.title
+    ]
+
+decks:
+{id: 
+    {deckobj}
+}
+
+
+cards:
+[
+       { id: card.id
+        question: card.question
+        answer: card.answer}
+    ]
