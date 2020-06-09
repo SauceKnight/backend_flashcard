@@ -7,10 +7,12 @@ bp = Blueprint("favorites", __name__, url_prefix="")
 @bp.route("/<int:userid>/decks/favorites")
 # get favorites by user id
 def get_favorites(userid):
-    favorites = Favorite.query.filter_by(user_id=userid).all()
+    favorites = Favorite.query.options(db.joinedload(
+        "favdeck")).filter_by(user_id=userid).all()
 
     data = [{
         "deck_id": favorite.deck_id,
+        "title": favorite.favdeck.title
     } for favorite in favorites]
     return {"data": data}
 

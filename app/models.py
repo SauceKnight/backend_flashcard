@@ -7,6 +7,9 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "users"
 
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
@@ -15,9 +18,6 @@ class User(db.Model):
     decks = db.relationship("Deck", back_populates="user")
     # card_completed = db.relationship(
     #     "Completed", back_populates="user_details")
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
 
 
 class Deck(db.Model):
@@ -30,6 +30,7 @@ class Deck(db.Model):
 
     cards = db.relationship("Card", back_populates="deck")
     user = db.relationship("User", back_populates="decks")
+    favorites = db.relationship("Favorite", back_populates="favdeck")
 
 
 class Card(db.Model):
@@ -59,3 +60,5 @@ class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     deck_id = db.Column(db.Integer, db.ForeignKey("decks.id"), nullable=False)
+
+    favdeck = db.relationship("Deck", back_populates="favorites")

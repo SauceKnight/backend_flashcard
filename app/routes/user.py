@@ -30,10 +30,11 @@ def register_user():
 @bp.route('/login', methods=['POST'])
 def login_user():
     data = request.json
+    print(data["username"])
     user = User.query.filter_by(username=data['username']).first()
     if user.check_password(data['password']):
         token = jwt.encode({'user_id': user.id}, app.config['SECRET_KEY'])
-        return {'token': token.decode('UTF-8')}
+        return {'token': token.decode('UTF-8'), "id": user.id, "username": user.username}
     else:
         return {'message': 'Invalid credentials'}, 401
 
@@ -51,4 +52,3 @@ def profile_user(userid, current_user):
         "email": user.email,
     }]
     return {"data": data}
-
