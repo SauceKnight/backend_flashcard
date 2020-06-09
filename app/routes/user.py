@@ -21,8 +21,9 @@ def register_user():
     )
     db.session.add(new_user)
     db.session.commit()
-    token = jwt.encode({'user_id': new_user.id}, app.config['SECRET_KEY'])
-    return {'token': token.decode('UTF-8')}
+    token = jwt.encode(
+        {"id": new_user.id, "username": new_user.username}, app.config['SECRET_KEY'])
+    return {'token': token.decode('UTF-8'), "id": new_user.id, "username": new_user.username}
 
 # # Login
 
@@ -33,7 +34,8 @@ def login_user():
     print(data["username"])
     user = User.query.filter_by(username=data['username']).first()
     if user.check_password(data['password']):
-        token = jwt.encode({'user_id': user.id}, app.config['SECRET_KEY'])
+        token = jwt.encode(
+            {"id": user.id, "username": user.username}, app.config['SECRET_KEY'])
         return {'token': token.decode('UTF-8'), "id": user.id, "username": user.username}
     else:
         return {'message': 'Invalid credentials'}, 401
