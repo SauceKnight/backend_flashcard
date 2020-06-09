@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash
 
 db = SQLAlchemy()
 
@@ -9,11 +10,14 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
     decks = db.relationship("Deck", back_populates="user")
     # card_completed = db.relationship(
     #     "Completed", back_populates="user_details")
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class Deck(db.Model):
