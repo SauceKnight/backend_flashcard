@@ -20,12 +20,10 @@ def get_cards():
 @bp.route("/cards/<deckid>")
 def get_cards_by_deck(deckid):
     cards = Card.query.filter_by(deck_id=deckid).all()
-    data = [{
-        "id": card.id,
-        "deck_id": card.deck_id,
-        "question": card.question,
-        "answer": card.answer
-    } for card in cards]
+    data = {}
+    for card in cards:
+        data[card.id] = {"id": card.id,
+                         "question": card.question, "answer": card.answer, "deck_id": card.deck_id}
     return {"data": data}
 
 
