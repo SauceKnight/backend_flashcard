@@ -15,7 +15,8 @@ def token_required(f):
             return {'message': 'a valid token is missing'}
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
-            current_user = User.query.filter_by(id=data['user_id']).first()
+            print("data", data)
+            current_user = User.query.filter_by(id=data['id']).first()
         except:
             return {'message': 'token is invalid'}, 401
         return f(current_user=current_user, *args, **kwargs)
