@@ -29,6 +29,19 @@ def get_cards_by_deck(deckid):
     return {"data": data}
 
 
+@bp.route("/cards/<int:deckId>/<int:cardId>")
+def get_single_card_by_deck(deckId, cardId):
+    card = Card.query.filter_by(deck_id=deckId).filter_by(id=cardId).first()
+    print(cardId)
+    data = {
+        "id": card.id,
+        "deck_id": card.deck_id,
+        "question": card.question,
+        "answer": card.answer
+    }
+    return {"data": data}
+
+
 @bp.route("/cards/<deckid>", methods=["POST"])
 def post_cards_by_deck(deckid):
     deck = Deck.query.filter_by(id=deckid).first()
