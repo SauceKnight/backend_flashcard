@@ -1,7 +1,25 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash
+from sqlalchemy import Table
 
 db = SQLAlchemy()
+
+# favorites = Table(
+#     "favorites",
+#     db.Model.metadata,
+#     db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False),
+#     db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+# )
+
+
+class Favorite(db.Model):
+    __tablename__ = "favorite"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    deck_id = db.Column(db.Integer, db.ForeignKey("decks.id"), nullable=False)
+
+    # favdeck = db.relationship("Deck", back_populates="favorites")
+    # favuser = db.relationship("User", back_populates="favoriteDecks")
 
 
 class User(db.Model):
@@ -16,6 +34,8 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
 
     decks = db.relationship("Deck", back_populates="user")
+    favoriteDecks = db.relationship(
+        "Deck", secondary="favorite")
     # card_completed = db.relationship(
     #     "Completed", back_populates="user_details")
 
@@ -30,7 +50,7 @@ class Deck(db.Model):
 
     cards = db.relationship("Card", back_populates="deck")
     user = db.relationship("User", back_populates="decks")
-    favorites = db.relationship("Favorite", back_populates="favdeck")
+    favorites = db.relationship("Favorite")
 
 
 class Card(db.Model):
@@ -53,12 +73,3 @@ class Completed(db.Model):
 
     # user_details = db.relationship("User", back_populates="card_completed")
     # card_details = db.relationship("Card", back_populates="user_completed")
-
-
-class Favorite(db.Model):
-    __tablename__ = "favorite"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    deck_id = db.Column(db.Integer, db.ForeignKey("decks.id"), nullable=False)
-
-    favdeck = db.relationship("Deck", back_populates="favorites")
