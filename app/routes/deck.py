@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from ..models import db, Deck, User
 
 bp = Blueprint("decks", __name__, url_prefix="/user/<int:userid>")
+searchbp = Blueprint("search", __name__, url_prefix="/search")
 
 
 @bp.route("/deck/<int:deckid>")
@@ -46,3 +47,18 @@ def new_deck(userid):
         "title": new_deck.title,
         "description": new_deck.description
     }
+
+
+@searchbp.route("/decks", methods=["POST"])
+# search the deck by title
+def search_all_decks():
+    data = request.json
+    searchTerm = data["searchTerm"]
+    decks = Deck.query.filter(Deck.title.ilike(f"%{searchTerm}%"))
+    foundDecks = [{
+        "id": deck.id,
+        "user_id": deck.user_id,
+        "title": deck.title,
+        "description": deck.description
+    } for deck in decks]
+    return {"data": foundDecks}
