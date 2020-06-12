@@ -50,12 +50,9 @@ def post_cards_by_deck(deckid):
     card = Card(**data)
     db.session.add(card)
     db.session.commit()
+    data = {}
+    data[card.id] = {"id": card.id,
+                     "question": card.question, "answer": card.answer, "deck_id": card.deck_id}
     return {
-        "id": card.id,
-        "deck_id": card.deck.id,
-        "question": card.question,
-        "answer": card.answer,
-        "deck": {
-            "title": deck.title
-        }
+        "data": data
     }

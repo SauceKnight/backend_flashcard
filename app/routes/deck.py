@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from ..models import db, Deck, User
+from ..models import db, Deck, User, Favorite
 
 bp = Blueprint("decks", __name__, url_prefix="/user/<int:userid>")
 
@@ -36,13 +36,21 @@ def new_deck(userid):
     if not user:
         return "User doesn't exist", 404
     data = request.json
+    print(type(userid))
     data["user_id"] = userid
     new_deck = Deck(**data)
+    favorite = Favorite()
     db.session.add(new_deck)
     db.session.commit()
+    favorite.user_id = userid
+    favorite.deck_id = new_deck.id
+    db.session.add(favorite)
+    db.session.commit()
+    data = {}
+    data[new_deck.id] = {"id": new_deck.id, "title": new_deck.title}
+    fav = {}
+    fav[favorite.id] = {"deck_id": favorite.deck_id}
     return {
-        "id": new_deck.id,
-        "user_id": userid,
-        "title": new_deck.title,
-        "description": new_deck.description
+        "data": data,
+        "fav": favorite.deck_id
     }
