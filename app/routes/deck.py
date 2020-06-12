@@ -9,25 +9,24 @@ searchbp = Blueprint("search", __name__, url_prefix="/search")
 # get one deck by deck id
 def get_deck(userid, deckid):
     deck = Deck.query.filter_by(id=deckid).first()
-    return {
+    data = {}
+    data[deckid] = {
         "id": deck.id,
-        "user_id": deck.user_id,
-        "title": deck.title,
-        "description": deck.description
-    }
+        "title": deck.title}
+    return {"data": data}
 
 
 @bp.route("/decks")
 # get all decks for a specific user
 def get_all_decks(userid):
-    decks = Deck.query.filter_by(user_id=userid).all()
-    data = [{
-        "id": deck.id,
-        "user_id": deck.user_id,
-        "title": deck.title,
-        "description": deck.description,
-    } for deck in decks]
-    return {"data": data}
+    user = User.query.options(db.joinedload("favoriteDecks")).filter_by(
+        id=userid).first()
+    fav_deck_ids = []
+    decks = {}
+    for deck in user.favoriteDecks:
+        fav_deck_ids.append(deck.id)
+        decks[deck.id] = {"id": deck.id, "title": deck.title}
+    return {"decks": decks, "favoritedecks": fav_deck_ids}
 
 
 @bp.route("/new_deck", methods=["POST"])

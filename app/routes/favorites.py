@@ -16,15 +16,36 @@ def get_favorites(userid):
     return {"data": data}
 
 
-@bp.route("/<int:userid>/decks/favorites", methods=['POST'])
+@bp.route("/<int:userid>/<int:deckid>/favorites", methods=['POST'])
 # push favorite deck into favorites
-def post_favorites(userid):
+def post_favorites(userid, deckid):
     data = request.json
+    deck = Deck.query.filter_by(id=deckid).first()
     favorites = Favorite(**data)
     db.session.add(favorites)
     db.session.commit()
+    decks = {}
+    fav = {}
+    fav[favorites.id] = {"deck_id": deck.id}
+    decks[deck.id] = {"id": deck.id, "title": deck.title}
     return {
-        "id": favorites.id,
-        "user_id": favorites.user_id,
-        "deck_id": favorites.deck_id
+        "decks": decks,
+        "fav": favorites.deck_id
     }
+
+
+@bp.route("/<int:userid>/<int:deckid>/favoritedelete", methods=['DELETE'])
+# push favorite deck into favorites
+def delete_favorites(userid, deckid):
+    data = request.json
+    favorite = Favorite.query.filter_by(user_id=userid, deck_id=deckid).first()
+    db.session.delete(favorite)
+    db.session.commit()
+    user = User.query.options(db.joinedload("favoriteDecks")).filter_by(
+        id=userid).first()
+    fav_deck_ids = []
+    decks = {}
+    for deck in user.favoriteDecks:
+        fav_deck_ids.append(deck.id)
+        decks[deck.id] = {"id": deck.id, "title": deck.title}
+    return {"decks": decks, "favoritedecks": fav_deck_ids}
