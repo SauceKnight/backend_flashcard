@@ -56,3 +56,31 @@ def post_cards_by_deck(deckid):
     return {
         "data": data
     }
+
+
+@bp.route("/cards/<cardid>", methods=["PUT"])
+def updateCard(cardid):
+    card = Card.query.filter_by(id=cardid).first()
+    data = request.json
+    card.question = data["question"]
+    card.answer = data["answer"]
+    db.session.commit()
+    data = {}
+    data[card.id] = {"id": card.id,
+                     "question": card.question, "answer": card.answer, "deck_id": card.deck_id}
+    return {
+        "data": data
+    }
+
+
+@bp.route("/cards/<cardid>/delete", methods=["DELETE"])
+def deleteCard(cardid):
+    card = Card.query.filter_by(id=cardid).first()
+    data = {}
+    data["deletedCard"] = {"id": card.id,
+                           "question": card.question, "answer": card.answer, "deck_id": card.deck_id}
+    db.session.delete(card)
+    db.session.commit()
+    return {
+        "data": data
+    }

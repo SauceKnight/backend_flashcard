@@ -27,7 +27,8 @@ def post_favorites(userid, deckid):
     decks = {}
     fav = {}
     fav[favorites.id] = {"deck_id": deck.id}
-    decks[deck.id] = {"id": deck.id, "title": deck.title}
+    decks[deck.id] = {"id": deck.id, "title": deck.title, "user_id": deck.user_id,
+                      "description": deck.description}
     return {
         "decks": decks,
         "fav": favorites.deck_id
@@ -47,5 +48,6 @@ def delete_favorites(userid, deckid):
     decks = {}
     for deck in user.favoriteDecks:
         fav_deck_ids.append(deck.id)
-        decks[deck.id] = {"id": deck.id, "title": deck.title}
+        decks[deck.id] = {"id": deck.id, "title": deck.title, "user_id": deck.user_id,
+                          "description": deck.description}
     return {"decks": decks, "favoritedecks": fav_deck_ids}
