@@ -39,7 +39,8 @@ def login_user():
         decks = {}
         for deck in user.favoriteDecks:
             fav_deck_ids.append(deck.id)
-            decks[deck.id] = {"id": deck.id, "title": deck.title}
+            decks[deck.id] = {"id": deck.id,
+                              "title": deck.title, "user_id": deck.user_id}
         print(fav_deck_ids)
         print(user.favoriteDecks)
         token = jwt.encode(
