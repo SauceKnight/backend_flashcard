@@ -1,15 +1,20 @@
 user:
     id: user.id
-    token: token
     username: user.username
     favdeck: [
-        deck.id,
-        deck.title
+        1,
+        2,
+        3,
+        // favorite.deck.id,
+        // favorite.deck.title
     ]
 
 decks:
-{id: 
-    {deckobj}
+{
+    1: {deckobj with id 1},
+    2: {deckobj with id 2},
+    3: {deckobj with id 3},
+
 }
 
 
@@ -19,3 +24,13 @@ cards:
         question: card.question
         answer: card.answer}
     ]
+
+    //
+    {
+        decks:{ 
+                1: {deckobj with id 1},
+                2: {deckobj with id 2},
+                3: {deckobj with id 3},}
+
+        favorites: [1, 2, 3]
+    }
